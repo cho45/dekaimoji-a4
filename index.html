@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html
+	ng-app="App"
+	>
+	<head>
+		<title>デカ文字A4ジェネレータ</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+		<script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.min.js"></script>
+		<script src="lib/micro-location.js"></script>
+		<script src="lib/jspdf.min.js"></script>
+
+		<link rev="made" href="mailto:cho45@lowreal.net"/>
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<style>
+			canvas {
+				outline: 1px solid #000;
+			}
+		</style>
+	</head>
+	<body ng-controller="MainCtrl">
+		<div class="jumbotron" style="position: relative; height: 250px; color: #fff; background: #000 url('https://lh6.googleusercontent.com/-Z_GL_049aJs/VPiGc9zu6UI/AAAAAAAAYNU/uXINkFFZEj0/s2048/%25E3%2582%25B9%25E3%2582%25AF%25E3%2583%25AA%25E3%2583%25BC%25E3%2583%25B3%25E3%2582%25B7%25E3%2583%25A7%25E3%2583%2583%25E3%2583%2588%25202015-03-06%25201.37.27.png') 50% 50% no-repeat">
+			<div class="container" style="text-shadow: 0 1px 2px #000;">
+				<h1>デカ文字A4ジェネレータ</h1>
+				<p class="lead">大きな文字をA4プリンタで分割して印刷できます</p>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<form class="form-horizontal">
+						<div ng-repeat="var in VARIABLE_DEFINITION" class="form-group">
+							<label class="col-sm-2 control-label">{{ var.desc }}</label>
+							<div class="col-sm-10">
+								<div class="input-group">
+									<input type="{{ var.type }}" class="form-control" placeholder="" ng-model="variables[var.name]">
+									<span class="input-group-addon" ng-if="var.unit">{{ var.unit }}</span>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col-md-6">
+					<!-- button class="btn btn-primary" ng-click="generatePrint()">Generate Print</button -->
+					<a href="{{ download }}" download="{{ filename }}" class="btn btn-primary" ng-disabled="!download">PDFをダウンロード</a>
+					<div style="margin: 1em 0; position: relative">
+						<div class="progress" ng-show="progress">
+							<div class="progress-bar" role="progressbar" style="width: {{ progress }}%;">
+								{{ progress }}%
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div style="width: 100%">
+				<canvas id="canvas" style="max-width: 100%; max-height: 100%"></canvas>
+			</div>
+
+			<!-- iframe id="iframe" width="500" height="500"></iframe -->
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>
