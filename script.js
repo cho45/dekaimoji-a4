@@ -80,7 +80,7 @@ App.factory('location', function () {
 
 App.config(function ($sceProvider, $compileProvider) {
 	$sceProvider.enabled(false);
-	$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
+	$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data|blob):/);
 });
 
 App.controller('MainCtrl', function ($scope, $sce, $timeout, $q, location) {
@@ -128,6 +128,7 @@ App.controller('MainCtrl', function ($scope, $sce, $timeout, $q, location) {
 		timer = setTimeout(function me () {
 			if ($scope.progress) {
 				timer = setTimeout(me);
+				return;
 			}
 			$scope.generatePrint();
 		}, 1000);
@@ -174,7 +175,21 @@ App.controller('MainCtrl', function ($scope, $sce, $timeout, $q, location) {
 
 		partImageForPrinting(canvas).then(function (pdf) {
 			$scope.progress = 100;
-			var uri = pdf.output('datauristring');
+
+			var data = pdf.output();
+			var buffer = new ArrayBuffer(data.length);
+			var array = new Uint8Array(buffer);
+
+			for (var i = 0; i < data.length; i++) {
+				array[i] = data.charCodeAt(i);
+			}
+
+			var blob = new Blob(
+				[ array ],
+				{type: 'application/pdf', encoding: 'raw'}
+			);
+
+			var uri = window.URL.createObjectURL(blob);
 			$scope.download = uri;
 			$scope.filename = 'dekai.pdf';
 			// document.getElementById('iframe').src = uri;
